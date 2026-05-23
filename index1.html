@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البيت الشامي | قائمة الطعام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8D5A3;
+            --gold-dark: #A0852C;
+            --white: #FFFFFF;
+            --black: #1A1A1A;
+            --gray: #F5F5F5;
+            --gray-dark: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--black) 0%, #2D2D2D 100%);
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .decorative-line {
+            width: 80px;
+            height: 3px;
+            background: var(--gold);
+            margin: 15px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: var(--black);
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--gold);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-dark);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .menu-item {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(201,168,76,0.1);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(201,168,76,0.2);
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .menu-item:hover .menu-item-image {
+            transform: scale(1.05);
+        }
+
+        .menu-item-content {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .menu-item-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 10px;
+        }
+
+        .menu-item-desc {
+            color: var(--gray-dark);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .menu-item-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .order-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--white);
+            border: none;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+        }
+
+        .order-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(201,168,76,0.5);
+        }
+
+        /* Order Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-dark);
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--gold);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--white);
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(201,168,76,0.4);
+        }
+
+        /* QR Page Link */
+        .qr-section {
+            background: linear-gradient(135deg, var(--gray) 0%, var(--white) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .qr-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .qr-section p {
+            color: var(--gray-dark);
+            margin-bottom: 25px;
+        }
+
+        .qr-link-btn {
+            display: inline-block;
+            background: var(--black);
+            color: var(--gold);
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid var(--gold);
+        }
+
+        .qr-link-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: var(--gold-light);
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-message i {
+            font-size: 4rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .success-message h3 {
+            font-size: 1.5rem;
+            color: var(--black);
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: var(--gray-dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo { font-size: 2rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .modal { padding: 25px; }
+            nav a { margin: 0 10px; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">البيت الشامي</div>
+        <div class="decorative-line"></div>
+        <p class="tagline">أصالة الشام في كل قضمة</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#menu" class="active">القائمة</a>
+        <a href="#order">الطلب</a>
+        <a href="qr.html">QR Code</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <section id="menu">
+            <h2 class="section-title">قائمتنا</h2>
+            <p class="section-subtitle">اختر من أشهى الصندويشات الشامية</p>
+
+            <div class="menu-grid">
+                <!-- Falafel -->
+                <div class="menu-item">
+                    <img src="https://kimi-web-img.moonshot.cn/img/habiba-sb.de/27f618c52d8c6627334296477e027347d845b883.png" alt="فلافل" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">فلافل</h3>
+                        <p class="menu-item-desc">فلافل مقرمشة مع خضار طازجة وطحينة</p>
+                        <p class="menu-item-price">السعر: --</p>
+                        <button class="order-btn" onclick="openOrder('فلافل')">اطلب الآن</button>
+                    </div>
+                </div>
+
+                <!-- Batata -->
+                <div class="menu-item">
+                    <img src="https://kimi-web-img.moonshot.cn/img/kitchen.sayidaty.net/d449ddd9bb8bff4b127ea4308b05624f601ac89b.jpg" alt="بطاطا" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">بطاطا</h3>
+                        <p class="menu-item-desc">بطاطا مقلية مع صوصات خاصة</p>
+                        <p class="menu-item-price">السعر: --</p>
+                        <button class="order-btn" onclick="openOrder('بطاطا')">اطلب الآن</button>
+                    </div>
+                </div>
+
+                <!-- Crispy -->
+                <div class="menu-item">
+                    <img src="https://kimi-web-img.moonshot.cn/img/damaskmart.com/7b2608d5e039372a2822df6bcc112cb0aad9cc37.jpg" alt="كريسبي" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">كريسبي</h3>
+                        <p class="menu-item-desc">دجاج مقرمش مع جبنة وخضار</p>
+                        <p class="menu-item-price">السعر: --</p>
+                        <button class="order-btn" onclick="openOrder('كريسبي')">اطلب الآن</button>
+                    </div>
+                </div>
+
+                <!-- Shish Tawook -->
+                <div class="menu-item">
+                    <img src="https://kimi-web-img.moonshot.cn/img/static.aljamila.com/69152330d0424ecceb349ed090945996f9fa54bd.jpg" alt="شيش طاوق" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">شيش طاوق</h3>
+                        <p class="menu-item-desc">دجاج مشوي على الفحم مع ثومية</p>
+                        <p class="menu-item-price">السعر: --</p>
+                        <button class="order-btn" onclick="openOrder('شيش طاوق')">اطلب الآن</button>
+                    </div>
+                </div>
+
+                <!-- Burger -->
+                <div class="menu-item">
+                    <img src="https://kimi-web-img.moonshot.cn/img/kitchen.sayidaty.net/754b53ac57211db7cb413f02ff48b39424bb6513.jpg" alt="برجر" class="menu-item-image">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">برجر</h3>
+                        <p class="menu-item-desc">برجر لحم طازج مع جبنة شيدر</p>
+                        <p class="menu-item-price">السعر: --</p>
+                        <button class="order-btn" onclick="openOrder('برجر')">اطلب الآن</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QR Section -->
+        <div class="qr-section">
+            <h2>QR Code للطلب السريع</h2>
+            <p>امسح الكود أو اضغط الزر للحصول على QR Code للمطعم</p>
+            <a href="qr.html" class="qr-link-btn">عرض QR Code</a>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeOrder()">&times;</button>
+
+            <div id="orderFormContent">
+                <h2 class="modal-title">طلب جديد</h2>
+                <p class="modal-subtitle" id="selectedItem">الصنف: --</p>
+
+                <form id="orderForm" onsubmit="submitOrder(event)">
+                    <div class="form-group">
+                        <label for="customerName">الاسم</label>
+                        <input type="text" id="customerName" required placeholder="أدخل اسمك">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerPhone">رقم الهاتف</label>
+                        <input type="tel" id="customerPhone" required placeholder="05xxxxxxxx">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customerAddress">العنوان</label>
+                        <input type="text" id="customerAddress" required placeholder="أدخل عنوان التوصيل">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orderNotes">ملاحظات</label>
+                        <textarea id="orderNotes" placeholder="أي ملاحظات خاصة بالطلب..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">إرسال الطلب</button>
+                </form>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <div style="font-size: 4rem; margin-bottom: 20px;">✓</div>
+                <h3>تم إرسال طلبك بنجاح!</h3>
+                <p>سنتواصل معك قريباً لتأكيد الطلب</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>البيت الشامي &copy; 2026 - جميع الحقوق محفوظة</p>
+    </footer>
+
+    <script>
+        let currentItem = '';
+
+        function openOrder(itemName) {
+            currentItem = itemName;
+            document.getElementById('selectedItem').textContent = 'الصنف: ' + itemName;
+            document.getElementById('orderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOrder() {
+            document.getElementById('orderModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Reset form after a delay
+            setTimeout(() => {
+                document.getElementById('orderForm').reset();
+                document.getElementById('orderFormContent').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+            }, 300);
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const address = document.getElementById('customerAddress').value;
+            const notes = document.getElementById('orderNotes').value;
+
+            // Here you would normally send data to a server
+            console.log('Order:', {
+                item: currentItem,
+                name: name,
+                phone: phone,
+                address: address,
+                notes: notes
+            });
+
+            // Show success message
+            document.getElementById('orderFormContent').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Auto close after 3 seconds
+            setTimeout(closeOrder, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeOrder();
+            }
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
