@@ -3,684 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>البيت الشامي | قائمة الطعام</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>البيت الشامي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #C9A84C;
-            --gold-light: #E8D5A3;
-            --gold-dark: #A0852C;
-            --white: #FFFFFF;
-            --black: #1A1A1A;
-            --gray: #F5F5F5;
-            --gray-dark: #666666;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--white);
-            color: var(--black);
-            line-height: 1.6;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--black) 0%, #2D2D2D 100%);
-            padding: 40px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        .logo {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--gold);
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .tagline {
-            color: var(--gold-light);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; background: #fff; }
+        header { background: #1a1a1a; color: #C9A84C; text-align: center; padding: 30px; }
+        .logo { font-size: 2.5rem; font-weight: 800; }
+        nav { background: #fff; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        nav a { color: #1a1a1a; text-decoration: none; margin: 0 15px; font-weight: 700; }
+        nav a:hover { color: #C9A84C; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .section-title { text-align: center; font-size: 2rem; font-weight: 800; margin-bottom: 30px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .menu-item { background: #fff; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border: 1px solid rgba(201,168,76,0.2); }
+        .menu-item-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; }
+        .menu-item-price { color: #C9A84C; font-size: 1.3rem; font-weight: 700; margin: 10px 0; }
+        .order-btn { background: #C9A84C; color: #fff; border: none; padding: 10px 30px; border-radius: 25px; font-family: 'Tajawal'; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .order-btn:hover { background: #A0852C; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 20px; width: 90%; max-width: 550px; max-height: 85vh; overflow-y: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 700; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Tajawal'; }
+        .submit-btn { width: 100%; background: #C9A84C; color: #fff; border: none; padding: 12px; border-radius: 8px; font-family: 'Tajawal'; font-size: 1.1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .add-btn { 
+            width: 100%; 
+            background: linear-gradient(135deg, #C9A84C 0%, #A0852C 100%); 
+            color: #fff; 
+            border: none; 
+            padding: 15px; 
+            border-radius: 12px; 
+            font-family: 'Tajawal'; 
             font-size: 1.1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .decorative-line {
-            width: 80px;
-            height: 3px;
-            background: var(--gold);
-            margin: 15px auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Navigation */
-        nav {
-            background: var(--white);
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav a {
-            color: var(--black);
-            text-decoration: none;
-            margin: 0 20px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        nav a:hover, nav a.active {
-            color: var(--gold);
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            right: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s;
-        }
-
-        nav a:hover::after, nav a.active::after {
-            width: 100%;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--black);
-            margin-bottom: 10px;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--gray-dark);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-
-        /* Menu Grid */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        .menu-item {
-            background: var(--white);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(201,168,76,0.1);
-        }
-
-        .menu-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(201,168,76,0.2);
-        }
-
-        .menu-item-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .menu-item:hover .menu-item-image {
-            transform: scale(1.05);
-        }
-
-        .menu-item-content {
-            padding: 25px;
-            text-align: center;
-        }
-
-        .menu-item-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--black);
-            margin-bottom: 10px;
-        }
-
-        .menu-item-desc {
-            color: var(--gray-dark);
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-
-        .menu-item-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 15px;
-        }
-
-        .order-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            color: var(--white);
-            border: none;
-            padding: 12px 35px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Tajawal', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 800; 
+            cursor: pointer; 
+            margin: 15px 0;
             box-shadow: 0 4px 15px rgba(201,168,76,0.3);
-        }
-
-        .order-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(201,168,76,0.5);
-        }
-
-        /* Order Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--white);
-            border-radius: 25px;
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: modalSlide 0.3s ease;
-        }
-
-        @keyframes modalSlide {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray-dark);
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--gold);
-        }
-
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--black);
-            margin-bottom: 5px;
-            text-align: center;
-        }
-
-        .modal-subtitle {
-            text-align: center;
-            color: var(--gold);
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--black);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-            background: var(--white);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .quantity-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .quantity-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            background: var(--white);
-            color: var(--gold);
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-
-        .quantity-btn:hover {
-            background: var(--gold);
-            color: var(--white);
-        }
-
-        .quantity-input {
-            width: 80px !important;
-            text-align: center;
-            font-size: 1.3rem !important;
-            font-weight: 800 !important;
-            padding: 10px !important;
-        }
-
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            color: var(--white);
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            font-family: 'Tajawal', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .submit-btn:hover {
+        .add-btn:hover { 
             transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(201,168,76,0.4);
+            box-shadow: 0 6px 20px rgba(201,168,76,0.5);
         }
-
-        .whatsapp-icon {
-            font-size: 1.3rem;
-        }
-
-        /* QR Page Link */
-        .qr-section {
-            background: linear-gradient(135deg, var(--gray) 0%, var(--white) 100%);
-            padding: 60px 20px;
-            text-align: center;
-            border-radius: 30px;
-            margin: 40px auto;
-            max-width: 800px;
-        }
-
-        .qr-section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-        }
-
-        .qr-section p {
-            color: var(--gray-dark);
-            margin-bottom: 25px;
-        }
-
-        .qr-link-btn {
-            display: inline-block;
-            background: var(--black);
-            color: var(--gold);
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            border: 2px solid var(--gold);
-        }
-
-        .qr-link-btn:hover {
-            background: var(--gold);
-            color: var(--black);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--black);
-            color: var(--white);
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 60px;
-        }
-
-        footer p {
-            color: var(--gold-light);
-        }
-
-        .footer-whatsapp {
-            margin-top: 15px;
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .logo { font-size: 2rem; }
-            .menu-grid { grid-template-columns: 1fr; }
-            .modal { padding: 25px; }
-            nav a { margin: 0 10px; font-size: 0.95rem; }
-        }
+        .item-row { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end; }
+        .item-row .form-group { margin-bottom: 0; }
+        .del-btn { background: #dc3545; color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1rem; }
+        .summary { background: #1a1a1a; color: #C9A84C; padding: 20px; border-radius: 15px; margin: 20px 0; }
+        .summary h3 { text-align: center; margin-bottom: 15px; }
+        .summary-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #fff; }
+        .summary-total { display: flex; justify-content: space-between; padding-top: 10px; margin-top: 10px; border-top: 2px solid #C9A84C; font-weight: 800; font-size: 1.2rem; }
+        footer { background: #1a1a1a; color: #C9A84C; text-align: center; padding: 20px; margin-top: 40px; }
+        @media (max-width: 600px) { .item-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="logo">البيت الشامي</div>
-        <div class="decorative-line"></div>
-        <p class="tagline">أصالة الشام في كل قضمة</p>
+        <p>أصالة الشام في كل قضمة</p>
     </header>
 
-    <!-- Navigation -->
     <nav>
-        <a href="#menu" class="active">القائمة</a>
-        <a href="#order">الطلب</a>
+        <a href="#meals">الوجبات</a>
+        <a href="#sandwiches">الصندويشات</a>
         <a href="qr.html">QR Code</a>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
-        <section id="menu">
-            <h2 class="section-title">قائمتنا</h2>
-            <p class="section-subtitle">اختر من أشهى الصندويشات الشامية</p>
-
+        <section id="meals">
+            <h2 class="section-title">🍽️ قائمة الوجبات</h2>
             <div class="menu-grid">
-                <!-- Falafel -->
                 <div class="menu-item">
-                    <img src="https://kimi-web-img.moonshot.cn/img/habiba-sb.de/27f618c52d8c6627334296477e027347d845b883.png" alt="فلافل" class="menu-item-image">
-                    <div class="menu-item-content">
-                        <h3 class="menu-item-title">فلافل</h3>
-                        <p class="menu-item-desc">فلافل مقرمشة مع خضار طازجة وطحينة</p>
-                        <p class="menu-item-price">السعر:60 --</p>
-                        <button class="order-btn" onclick="openOrder('فلافل')">اطلب الآن</button>
-                    </div>
+                    <h3 class="menu-item-title">طبق فلافل</h3>
+                    <p>فلافل مقرمشة مع خضار وطحينة</p>
+                    <p class="menu-item-price">50 - 300 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
                 </div>
-
-                <!-- Batata -->
                 <div class="menu-item">
-                    <img src="https://kimi-web-img.moonshot.cn/img/kitchen.sayidaty.net/d449ddd9bb8bff4b127ea4308b05624f601ac89b.jpg" alt="بطاطا" class="menu-item-image">
-                    <div class="menu-item-content">
-                        <h3 class="menu-item-title">بطاطا</h3>
-                        <p class="menu-item-desc">بطاطا مقلية مع صوصات خاصة</p>
-                        <p class="menu-item-price">السعر: --</p>
-                        <button class="order-btn" onclick="openOrder('بطاطا')">اطلب الآن</button>
-                    </div>
+                    <h3 class="menu-item-title">طبق بطاطا</h3>
+                    <p>بطاطا مقلية مع صوصات خاصة</p>
+                    <p class="menu-item-price">50 - 300 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
                 </div>
-
-                <!-- Crispy -->
                 <div class="menu-item">
-                    <img src="https://kimi-web-img.moonshot.cn/img/damaskmart.com/7b2608d5e039372a2822df6bcc112cb0aad9cc37.jpg" alt="كريسبي" class="menu-item-image">
-                    <div class="menu-item-content">
-                        <h3 class="menu-item-title">كريسبي</h3>
-                        <p class="menu-item-desc">دجاج مقرمش مع جبنة وخضار</p>
-                        <p class="menu-item-price">السعر: --</p>
-                        <button class="order-btn" onclick="openOrder('كريسبي')">اطلب الآن</button>
-                    </div>
+                    <h3 class="menu-item-title">وجبة كريسبي</h3>
+                    <p>دجاج مقرمش مع بطاطا ومشروب</p>
+                    <p class="menu-item-price">300 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
                 </div>
-
-                <!-- Shish Tawook -->
                 <div class="menu-item">
-                    <img src="https://kimi-web-img.moonshot.cn/img/static.aljamila.com/69152330d0424ecceb349ed090945996f9fa54bd.jpg" alt="شيش طاوق" class="menu-item-image">
-                    <div class="menu-item-content">
-                        <h3 class="menu-item-title">شيش طاوق</h3>
-                        <p class="menu-item-desc">دجاج مشوي على الفحم مع ثومية</p>
-                        <p class="menu-item-price">السعر: --</p>
-                        <button class="order-btn" onclick="openOrder('شيش طاوق')">اطلب الآن</button>
-                    </div>
+                    <h3 class="menu-item-title">وجبة فاهيتا</h3>
+                    <p>فاهيتا دجاج مع خضار وبطاطا</p>
+                    <p class="menu-item-price">300 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
                 </div>
-
-                <!-- Burger -->
                 <div class="menu-item">
-                    <img src="https://kimi-web-img.moonshot.cn/img/kitchen.sayidaty.net/754b53ac57211db7cb413f02ff48b39424bb6513.jpg" alt="برجر" class="menu-item-image">
-                    <div class="menu-item-content">
-                        <h3 class="menu-item-title">برجر</h3>
-                        <p class="menu-item-desc">برجر لحم طازج مع جبنة شيدر</p>
-                        <p class="menu-item-price">السعر: --</p>
-                        <button class="order-btn" onclick="openOrder('برجر')">اطلب الآن</button>
-                    </div>
+                    <h3 class="menu-item-title">طبق متبل</h3>
+                    <p>متبل باذنجان شامي أصيل</p>
+                    <p class="menu-item-price">70 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">حمص بطحينة</h3>
+                    <p>نص كيلو حمص بطحينة شامي</p>
+                    <p class="menu-item-price">100 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">ميونيز</h3>
+                    <p>نص كيلو ميونيز منزلي</p>
+                    <p class="menu-item-price">100 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">ربطة خبز</h3>
+                    <p>خبز شامي طازج</p>
+                    <p class="menu-item-price">70 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
                 </div>
             </div>
         </section>
 
-        <!-- QR Section -->
-        <div class="qr-section">
-            <h2>QR Code للطلب السريع</h2>
-            <p>امسح الكود أو اضغط الزر للحصول على QR Code للمطعم</p>
-            <a href="qr.html" class="qr-link-btn">عرض QR Code</a>
-        </div>
-    </div>
-
-    <!-- Order Modal -->
-    <div class="modal-overlay" id="orderModal">
-        <div class="modal">
-            <button class="modal-close" onclick="closeOrder()">&times;</button>
-
-            <div id="orderFormContent">
-                <h2 class="modal-title">طلب جديد</h2>
-                <p class="modal-subtitle" id="selectedItem">الصنف: --</p>
-
-                <form id="orderForm" onsubmit="submitOrder(event)">
-                    <!-- Quantity -->
-                    <div class="form-group">
-                        <label for="quantity">الكمية (عدد الصندويشات) *</label>
-                        <div class="quantity-wrapper">
-                            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">−</button>
-                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="50" readonly>
-                            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="customerName">الاسم *</label>
-                        <input type="text" id="customerName" required placeholder="أدخل اسمك الكامل">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="customerPhone">رقم الهاتف *</label>
-                        <input type="tel" id="customerPhone" required placeholder="09xxxxxxxx">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="customerAddress">العنوان *</label>
-                        <input type="text" id="customerAddress" required placeholder="أدخل عنوان التوصيل بالتفصيل">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="orderNotes">ملاحظات</label>
-                        <textarea id="orderNotes" placeholder="أي ملاحظات خاصة بالطلب (بدون بصل، إضافات، الخ...)"></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <span class="whatsapp-icon">📱</span>
-                        إرسال الطلب عبر واتساب
-                    </button>
-                </form>
+        <section id="sandwiches">
+            <h2 class="section-title">🥪 الصندويشات</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <h3 class="menu-item-title">فلافل</h3>
+                    <p>فلافل مقرمشة مع خضار طازجة وطحينة</p>
+                    <p class="menu-item-price">60 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">بطاطا</h3>
+                    <p>بطاطا مقلية مع صوصات خاصة</p>
+                    <p class="menu-item-price">80 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">كريسبي</h3>
+                    <p>دجاج مقرمش مع جبنة وخضار</p>
+                    <p class="menu-item-price">150 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">شيش طاوق</h3>
+                    <p>دجاج مشوي على الفحم مع ثومية</p>
+                    <p class="menu-item-price">170 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
+                <div class="menu-item">
+                    <h3 class="menu-item-title">برجر</h3>
+                    <p>برجر لحم طازج مع جبنة شيدر</p>
+                    <p class="menu-item-price">200 ل.س</p>
+                    <button class="order-btn" onclick="openModal()">اطلب الآن</button>
+                </div>
             </div>
+        </section>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <h2 style="text-align:center; margin-bottom:20px;">طلب جديد</h2>
+            <form onsubmit="sendOrder(event)">
+
+                <div id="itemsContainer"></div>
+
+                <button type="button" class="add-btn" onclick="addItem()">➕ إضافة صنف جديد للطلب</button>
+
+                <div class="summary">
+                    <h3>🧾 ملخص الطلب</h3>
+                    <div id="summaryList">
+                        <div class="summary-item"><span>لم تضف أصناف</span><span>0 ل.س</span></div>
+                    </div>
+                    <div class="summary-total"><span>المجموع:</span><span id="totalPrice">0 ل.س</span></div>
+                </div>
+
+                <div class="form-group">
+                    <label>الاسم *</label>
+                    <input type="text" id="name" required placeholder="أدخل اسمك">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف *</label>
+                    <input type="tel" id="phone" required placeholder="09xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>العنوان *</label>
+                    <input type="text" id="address" required placeholder="أدخل العنوان">
+                </div>
+                <div class="form-group">
+                    <label>ملاحظات</label>
+                    <textarea id="notes" placeholder="أي ملاحظات..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">📱 إرسال عبر واتساب</button>
+                <button type="button" onclick="closeModal()" style="width:100%; margin-top:10px; padding:10px; background:#ddd; border:none; border-radius:8px; font-family:'Tajawal'; cursor:pointer;">إغلاق</button>
+            </form>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
-        <p>البيت الشامي &copy; 2026 - جميع الحقوق محفوظة</p>
-        <p class="footer-whatsapp">للطلب المباشر: 0944846249</p>
+        <p>البيت الشامي &copy; 2026</p>
+        <p>للطلب: 00963944846249</p>
     </footer>
 
     <script>
-        let currentItem = '';
-        const WHATSAPP_NUMBER = '0944846249';
+        const PRICES = {
+            'فلافل': 60, 'بطاطا': 80, 'كريسبي': 150, 'شيش طاوق': 170, 'برجر': 200,
+            'طبق فلافل': 50, 'طبق بطاطا': 50, 'وجبة كريسبي': 300, 'وجبة فاهيتا': 300,
+            'طبق متبل': 70, 'حمص بطحينة': 100, 'ميونيز': 100, 'ربطة خبز': 70
+        };
 
-        function openOrder(itemName) {
-            currentItem = itemName;
-            document.getElementById('selectedItem').textContent = 'الصنف: ' + itemName;
+        let items = [];
+        let counter = 0;
+
+        function openModal() {
             document.getElementById('orderModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            // Reset quantity to 1
-            document.getElementById('quantity').value = 1;
+            if(items.length === 0) addItem();
         }
 
-        function closeOrder() {
+        function closeModal() {
             document.getElementById('orderModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => {
-                document.getElementById('orderForm').reset();
-                document.getElementById('quantity').value = 1;
-            }, 300);
         }
 
-        function changeQuantity(delta) {
-            const input = document.getElementById('quantity');
-            let newValue = parseInt(input.value) + delta;
-            if (newValue >= 1 && newValue <= 50) {
-                input.value = newValue;
-            }
+        function addItem() {
+            counter++;
+            const id = 'item-' + counter;
+            const html = `
+                <div class="item-row" id="${id}">
+                    <div class="form-group">
+                        <label>الصنف</label>
+                        <select class="item-select" onchange="updateSummary()" data-id="${id}">
+                            <option value="">اختر الصنف</option>
+                            <optgroup label="الوجبات">
+                                <option value="طبق فلافل">طبق فلافل (50 ل.س)</option>
+                                <option value="طبق بطاطا">طبق بطاطا (50 ل.س)</option>
+                                <option value="وجبة كريسبي">وجبة كريسبي (300 ل.س)</option>
+                                <option value="وجبة فاهيتا">وجبة فاهيتا (300 ل.س)</option>
+                                <option value="طبق متبل">طبق متبل (70 ل.س)</option>
+                                <option value="حمص بطحينة">حمص بطحينة (100 ل.س)</option>
+                                <option value="ميونيز">ميونيز (100 ل.س)</option>
+                                <option value="ربطة خبز">ربطة خبز (70 ل.س)</option>
+                            </optgroup>
+                            <optgroup label="الصندويشات">
+                                <option value="فلافل">فلافل (60 ل.س)</option>
+                                <option value="بطاطا">بطاطا (80 ل.س)</option>
+                                <option value="كريسبي">كريسبي (150 ل.س)</option>
+                                <option value="شيش طاوق">شيش طاوق (170 ل.س)</option>
+                                <option value="برجر">برجر (200 ل.س)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الكمية</label>
+                        <input type="number" class="item-qty" value="1" min="1" max="50" onchange="updateSummary()" data-id="${id}">
+                    </div>
+                    <button type="button" class="del-btn" onclick="removeItem('${id}')">🗑️</button>
+                </div>
+            `;
+            document.getElementById('itemsContainer').insertAdjacentHTML('beforeend', html);
+            items.push(id);
+            updateSummary();
         }
 
-        function submitOrder(event) {
-            event.preventDefault();
-
-            const quantity = document.getElementById('quantity').value;
-            const name = document.getElementById('customerName').value.trim();
-            const phone = document.getElementById('customerPhone').value.trim();
-            const address = document.getElementById('customerAddress').value.trim();
-            const notes = document.getElementById('orderNotes').value.trim();
-
-            // Build WhatsApp message
-            let message = '🍽️ *طلب جديد من البيت الشامي* 🍽️\n\n';
-            message += '📦 *الصنف:* ' + currentItem + '\n';
-            message += '🔢 *الكمية:* ' + quantity + ' صندويشة\n';
-            message += '👤 *الاسم:* ' + name + '\n';
-            message += '📱 *الهاتف:* ' + phone + '\n';
-            message += '📍 *العنوان:* ' + address + '\n';
-
-            if (notes) {
-                message += '📝 *ملاحظات:* ' + notes + '\n';
-            }
-
-            message += '\n⏰ *وقت الطلب:* ' + new Date().toLocaleString('ar-SY') + '\n';
-            message += '\nشكراً لطلبك! 🙏';
-
-            // Encode message for URL
-            const encodedMessage = encodeURIComponent(message);
-
-            // Create WhatsApp URL
-            const whatsappUrl = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodedMessage;
-
-            // Open WhatsApp
-            window.open(whatsappUrl, '_blank');
-
-            // Close modal
-            closeOrder();
+        function removeItem(id) {
+            document.getElementById(id).remove();
+            items = items.filter(i => i !== id);
+            updateSummary();
         }
 
-        // Close modal on outside click
-        document.getElementById('orderModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeOrder();
-            }
-        });
+        function updateSummary() {
+            let total = 0;
+            let html = '';
+            let hasItems = false;
 
-        // Smooth scroll for navigation
-        document.querySelectorAll('nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                if (this.getAttribute('href').startsWith('#')) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
+            items.forEach(id => {
+                const select = document.querySelector(`#${id} .item-select`);
+                const qty = document.querySelector(`#${id} .item-qty`);
+                if(select && qty) {
+                    const name = select.value;
+                    const q = parseInt(qty.value) || 1;
+                    if(name && PRICES[name]) {
+                        const price = PRICES[name];
+                        const itemTotal = price * q;
+                        total += itemTotal;
+                        hasItems = true;
+                        html += `<div class="summary-item"><span>${name} × ${q}</span><span>${itemTotal} ل.س</span></div>`;
                     }
                 }
             });
+
+            if(!hasItems) html = '<div class="summary-item"><span>لم تضف أصناف</span><span>0 ل.س</span></div>';
+
+            document.getElementById('summaryList').innerHTML = html;
+            document.getElementById('totalPrice').textContent = total + ' ل.س';
+        }
+
+        function sendOrder(e) {
+            e.preventDefault();
+
+            let orderItems = [];
+            let total = 0;
+
+            items.forEach(id => {
+                const select = document.querySelector(`#${id} .item-select`);
+                const qty = document.querySelector(`#${id} .item-qty`);
+                if(select && qty) {
+                    const name = select.value;
+                    const q = parseInt(qty.value) || 1;
+                    if(name && PRICES[name]) {
+                        const price = PRICES[name];
+                        const itemTotal = price * q;
+                        total += itemTotal;
+                        orderItems.push({name, q, price, itemTotal});
+                    }
+                }
+            });
+
+            if(orderItems.length === 0) {
+                alert('الرجاء إضافة صنف واحد على الأقل');
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const notes = document.getElementById('notes').value;
+
+            let msg = '🧾 *فاتورة البيت الشامي* 🧾\n\n';
+            msg += '━━━━━━━━━━━━━━\n';
+
+            orderItems.forEach((item, i) => {
+                msg += `${i+1}. *${item.name}*\n`;
+                msg += `   الكمية: ${item.q}\n`;
+                msg += `   السعر: ${item.price} × ${item.q} = *${item.itemTotal} ل.س*\n\n`;
+            });
+
+            msg += '━━━━━━━━━━━━━━\n';
+            msg += `💰 *المجموع: ${total} ل.س*\n`;
+            msg += '━━━━━━━━━━━━━━\n\n';
+            msg += `👤 ${name}\n📱 ${phone}\n📍 ${address}\n`;
+            if(notes) msg += `📝 ${notes}\n`;
+            msg += `\n⏰ ${new Date().toLocaleString('ar-SY')}`;
+
+            window.open('https://wa.me/00963944846249?text=' + encodeURIComponent(msg), '_blank');
+            closeModal();
+
+            setTimeout(() => {
+                document.getElementById('itemsContainer').innerHTML = '';
+                items = [];
+                counter = 0;
+                updateSummary();
+            }, 500);
+        }
+
+        document.getElementById('orderModal').addEventListener('click', function(e) {
+            if(e.target === this) closeModal();
         });
     </script>
 </body>
-</html>
+                        </html>
